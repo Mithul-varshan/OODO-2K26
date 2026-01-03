@@ -44,7 +44,9 @@ import {
   Theater,
   Dumbbell,
   Soup,
-  Loader2
+  Loader2,
+  Edit2,
+  Check
 } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
@@ -190,7 +192,7 @@ const ItineraryBuilder = () => {
   const navigate = useNavigate();
   const { tripId } = useParams();
   const [searchParams] = useSearchParams();
-  const { saveItinerary, currentTrip, updateTripItinerary, getTrip, selectTrip } = useTrips();
+  const { saveItinerary, currentTrip, updateTripItinerary, getTrip, selectTrip, updateTripBudget } = useTrips();
   
   const [tripName, setTripName] = useState('');
   const [stops, setStops] = useState([]);
@@ -213,10 +215,34 @@ const ItineraryBuilder = () => {
     icon: 'sparkles'
   });
   
+  // Budget editing state
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
+  
   // City search API state
   const [cityResults, setCityResults] = useState([]);
   const [isSearchingCities, setIsSearchingCities] = useState(false);
   const citySearchTimeoutRef = useRef(null);
+
+  // Budget management functions
+  const startEditingBudget = () => {
+    setEditingBudget(true);
+    setBudgetInput(currentTrip?.budget?.toString() || '');
+  };
+
+  const saveBudget = () => {
+    if (editingTripId && budgetInput !== '') {
+      const budget = parseFloat(budgetInput) || 0;
+      updateTripBudget(editingTripId, budget);
+      setEditingBudget(false);
+      setBudgetInput('');
+    }
+  };
+
+  const cancelEditingBudget = () => {
+    setEditingBudget(false);
+    setBudgetInput('');
+  };
 
   // Search cities using Open-Meteo Geocoding API
   const searchCities = async (query) => {
@@ -510,9 +536,47 @@ const ItineraryBuilder = () => {
             <p className="text-gray-400 mt-1">Add cities and plan activities for each stop</p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm text-gray-400">Total Budget</p>
-              <p className="text-xl font-bold text-green-400">${calculateTotalBudget().toFixed(2)}</p>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3">
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <p className="text-sm text-gray-400">Total Expenses</p>
+                  <p className="text-xl font-bold text-white">${calculateTotalBudget().toFixed(2)}</p>
+                </div>
+                <div className="w-px h-10 bg-gray-700"></div>
+                <div className="text-right">
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-sm text-gray-400">Budget Limit</p>
+                    {editingTripId && (
+                      editingBudget ? (
+                        <div className="flex items-center gap-1">
+                          <button onClick={saveBudget} className="p-0.5 hover:bg-green-600/20 rounded" title="Save budget">
+                            <Check className="w-3.5 h-3.5 text-green-400" />
+                          </button>
+                          <button onClick={cancelEditingBudget} className="p-0.5 hover:bg-red-600/20 rounded" title="Cancel">
+                            <X className="w-3.5 h-3.5 text-red-400" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button onClick={startEditingBudget} className="p-0.5 hover:bg-blue-600/20 rounded transition-colors" title="Edit budget limit">
+                          <Edit2 className="w-3.5 h-3.5 text-blue-400" />
+                        </button>
+                      )
+                    )}
+                  </div>
+                  {editingBudget ? (
+                    <input
+                      type="number"
+                      value={budgetInput}
+                      onChange={(e) => setBudgetInput(e.target.value)}
+                      className="w-28 px-2 py-1 bg-gray-900 border border-green-500 rounded text-lg font-bold text-white focus:outline-none"
+                      placeholder="0.00"
+                      autoFocus
+                    />
+                  ) : (
+                    <p className="text-xl font-bold text-green-400">${(currentTrip?.budget || 0).toFixed(2)}</p>
+                  )}
+                </div>
+              </div>
             </div>
             <button
               onClick={handlePreview}

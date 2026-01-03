@@ -8,6 +8,7 @@ import ItineraryBuilder from "./pages/ItineraryBuilder";
 import TimelineView from "./pages/TimelineView";
 import GlobalCalendar from "./pages/GlobalCalendar";
 import BudgetTracker from "./pages/BudgetTracker";
+import Explore from "./pages/Explore";
 import Profile from "./pages/Profile";
 import "./App.css";
 
