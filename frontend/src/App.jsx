@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { TripProvider } from './context/TripContext';
+import Dashboard from './pages/Dashboard';
+import CreateTrip from './pages/CreateTrip';
+import MyTrips from './pages/MyTrips';
+import ItineraryBuilder from './pages/ItineraryBuilder';
+import TimelineView from './pages/TimelineView';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <TripProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/create-trip" element={<CreateTrip />} />
+          <Route path="/my-trips" element={<MyTrips />} />
+          <Route path="/itinerary-builder" element={<ItineraryBuilder />} />
+          <Route path="/itinerary-builder/:tripId" element={<ItineraryBuilder />} />
+          <Route path="/timeline/:tripId" element={<TimelineView />} />
+          <Route path="/timeline" element={<TimelineView />} />
+        </Routes>
+      </Router>
+    </TripProvider>
+  );
 }
 
-export default App
+export default App;
