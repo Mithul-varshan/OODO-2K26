@@ -207,6 +207,38 @@ const ItineraryBuilder = () => {
     return matchesCategory && matchesSearch;
   });
 
+  // Filter activities based on search and category
+  const filteredActivities = allActivities.filter((activity) => {
+    const matchesSearch = activity.name.toLowerCase().includes(activitySearchQuery.toLowerCase()) ||
+                          activity.type.toLowerCase().includes(activitySearchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || activity.type === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Reset activity modal state
+  const resetActivityModal = () => {
+    setShowActivityModal(null);
+    setSelectedActivity(null);
+    setActivitySchedule({ date: '', time: '' });
+    setActivitySearchQuery('');
+    setSelectedCategory('all');
+    setShowCustomActivityForm(false);
+    setCustomActivity({ name: '', type: 'Sightseeing', cost: 0, icon: 'sparkles' });
+  };
+
+  // Add custom activity
+  const addCustomActivity = () => {
+    if (!customActivity.name.trim()) return;
+    const newActivity = {
+      id: Date.now(),
+      ...customActivity,
+      custom: true
+    };
+    handleActivitySelect(newActivity);
+    setShowCustomActivityForm(false);
+    setCustomActivity({ name: '', type: 'Sightseeing', cost: 0, icon: 'sparkles' });
+  };
+
   // Filter cities based on search
   const filteredCities = mockCities.filter(
     (city) =>
@@ -626,6 +658,13 @@ const ItineraryBuilder = () => {
                                 title="Edit activity"
                               >
                                 <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => startEditingActivity(stop.id, activity)}
+                                className="text-gray-400 hover:text-blue-400 transition-colors"
+                                title="Edit activity"
+                              >
+                                <Pencil className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => removeActivityFromStop(stop.id, activity.assignedId)}
