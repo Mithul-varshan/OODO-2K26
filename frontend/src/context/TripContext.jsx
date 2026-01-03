@@ -43,6 +43,7 @@ export const TripProvider = ({ children }) => {
       endDate: tripData.endDate,
       destination: tripData.selectedPlace,
       coverImage: tripData.coverImage || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800',
+      budget: tripData.budget || 0,
       stops: [],
       suggestedActivities: suggestedActivities,
       createdAt: new Date().toISOString(),
@@ -185,6 +186,18 @@ export const TripProvider = ({ children }) => {
     }
   };
 
+  // Update trip budget
+  const updateTripBudget = (tripId, budget) => {
+    setTrips(trips.map(trip => 
+      trip.id === tripId 
+        ? { ...trip, budget, updatedAt: new Date().toISOString() }
+        : trip
+    ));
+    if (currentTrip && currentTrip.id === tripId) {
+      setCurrentTrip({ ...currentTrip, budget });
+    }
+  };
+
   // Set current trip for editing
   const selectTrip = (tripId) => {
     const trip = trips.find(t => t.id === parseInt(tripId));
@@ -203,6 +216,7 @@ export const TripProvider = ({ children }) => {
       getTrip,
       deleteTrip,
       selectTrip,
+      updateTripBudget,
     }}>
       {children}
     </TripContext.Provider>

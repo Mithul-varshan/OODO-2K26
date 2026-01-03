@@ -33,6 +33,18 @@ const Header = () => {
               {t("myTrips")}
             </Link>
             <Link
+              to="/calendar"
+              className="text-gray-300 hover:text-white transition-colors duration-200"
+            >
+              Calendar
+            </Link>
+            <Link
+              to="/budget"
+              className="text-gray-300 hover:text-white transition-colors duration-200"
+            >
+              Budget
+            </Link>
+            <Link
               to="/explore"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >

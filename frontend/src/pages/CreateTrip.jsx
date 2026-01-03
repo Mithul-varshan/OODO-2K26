@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X, Loader2, DollarSign } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
 
@@ -116,6 +116,7 @@ const CreateTrip = () => {
     startDate: '',
     endDate: '',
     selectedPlace: '',
+    budget: '',
   });
   const [isCreating, setIsCreating] = useState(false);
   const [selectedActivities, setSelectedActivities] = useState([]);
@@ -346,6 +347,26 @@ const CreateTrip = () => {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   className="w-full pl-12 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all [color-scheme:dark]"
+                />
+              </div>
+            </div>
+
+            {/* Budget Limit */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <label className="text-gray-300 text-sm font-medium w-32 shrink-0">
+                Budget Limit:
+              </label>
+              <div className="relative flex-1">
+                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="number"
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleInputChange}
+                  placeholder="Enter budget limit (optional)"
+                  min="0"
+                  step="0.01"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
               </div>
             </div>

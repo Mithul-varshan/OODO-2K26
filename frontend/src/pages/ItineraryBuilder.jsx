@@ -200,7 +200,7 @@ const ItineraryBuilder = () => {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [editingTripId, setEditingTripId] = useState(null);
   const [selectedActivity, setSelectedActivity] = useState(null);
-  const [activitySchedule, setActivitySchedule] = useState({ date: '', time: '' });
+  const [activitySchedule, setActivitySchedule] = useState({ date: '', time: '', cost: 0 });
   const [tripSuggestedActivities, setTripSuggestedActivities] = useState([]);
   const [editingActivity, setEditingActivity] = useState(null); // { stopId, activity }
   const [activitySearchQuery, setActivitySearchQuery] = useState('');
@@ -376,6 +376,7 @@ const ItineraryBuilder = () => {
       assignedId: Date.now(),
       date: schedule.date || '',
       time: schedule.time || '9:00 AM',
+      cost: schedule.cost !== undefined ? schedule.cost : activity.cost,
     };
     setStops(
       stops.map((stop) =>
@@ -386,7 +387,7 @@ const ItineraryBuilder = () => {
     );
     setShowActivityModal(null);
     setSelectedActivity(null);
-    setActivitySchedule({ date: '', time: '' });
+    setActivitySchedule({ date: '', time: '', cost: 0 });
   };
 
   const handleActivitySelect = (activity) => {
@@ -395,7 +396,8 @@ const ItineraryBuilder = () => {
     const stop = stops.find(s => s.id === showActivityModal);
     setActivitySchedule({
       date: stop?.arrivalDate || '',
-      time: '9:00 AM'
+      time: '9:00 AM',
+      cost: activity.cost || 0
     });
   };
 
@@ -407,7 +409,7 @@ const ItineraryBuilder = () => {
 
   const cancelActivitySelection = () => {
     setSelectedActivity(null);
-    setActivitySchedule({ date: '', time: '' });
+    setActivitySchedule({ date: '', time: '', cost: 0 });
   };
 
   const removeActivityFromStop = (stopId, assignedId) => {
@@ -606,9 +608,16 @@ const ItineraryBuilder = () => {
                           type="date"
                           value={stop.arrivalDate}
                           onChange={(e) => updateStop(stop.id, 'arrivalDate', e.target.value)}
+                          min={currentTrip?.startDate || ''}
+                          max={currentTrip?.endDate || stop.departureDate || ''}
                           className="w-full pl-10 pr-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
                         />
                       </div>
+                      {currentTrip?.startDate && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Trip: {new Date(currentTrip.startDate).toLocaleDateString()} - {new Date(currentTrip.endDate).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
 
                     {/* Departure Date */}
@@ -620,6 +629,8 @@ const ItineraryBuilder = () => {
                           type="date"
                           value={stop.departureDate}
                           onChange={(e) => updateStop(stop.id, 'departureDate', e.target.value)}
+                          min={stop.arrivalDate || currentTrip?.startDate || ''}
+                          max={currentTrip?.endDate || ''}
                           className="w-full pl-10 pr-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
                         />
                       </div>
@@ -1059,7 +1070,7 @@ const ItineraryBuilder = () => {
                   </div>
 
                   {/* Time Selection */}
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <label className="block text-sm text-gray-400 mb-2">
                       <Clock className="w-4 h-4 inline mr-1" />
                       Time
@@ -1087,6 +1098,26 @@ const ItineraryBuilder = () => {
                       <option value="9:00 PM">9:00 PM</option>
                       <option value="10:00 PM">10:00 PM</option>
                     </select>
+                  </div>
+
+                  {/* Cost Input */}
+                  <div className="mb-6">
+                    <label className="block text-sm text-gray-400 mb-2">
+                      <DollarSign className="w-4 h-4 inline mr-1" />
+                      Cost
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                      <input
+                        type="number"
+                        value={activitySchedule.cost}
+                        onChange={(e) => setActivitySchedule({ ...activitySchedule, cost: parseFloat(e.target.value) || 0 })}
+                        min="0"
+                        step="0.01"
+                        className="w-full pl-8 pr-3 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                        placeholder="0.00"
+                      />
+                    </div>
                   </div>
 
                   {/* Action Buttons */}
@@ -1230,9 +1261,16 @@ const ItineraryBuilder = () => {
                       type="date"
                       value={editingActivity.activity.date || ''}
                       onChange={(e) => updateEditingActivity('date', e.target.value)}
+                      min={stops.find(s => s.id === editingActivity.stopId)?.arrivalDate || ''}
+                      max={stops.find(s => s.id === editingActivity.stopId)?.departureDate || ''}
                       className="w-full pl-10 pr-3 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
                     />
                   </div>
+                  {stops.find(s => s.id === editingActivity.stopId)?.arrivalDate && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Stay: {new Date(stops.find(s => s.id === editingActivity.stopId)?.arrivalDate).toLocaleDateString()} - {new Date(stops.find(s => s.id === editingActivity.stopId)?.departureDate).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
 
                 {/* Time */}
