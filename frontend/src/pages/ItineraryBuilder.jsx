@@ -17,7 +17,33 @@ import {
   ShoppingBag,
   Eye,
   Save,
-  Clock
+  Clock,
+  Pencil,
+  Plane,
+  Train,
+  Bus,
+  Car,
+  Hotel,
+  Home,
+  Coffee,
+  Waves,
+  Sparkles,
+  Music,
+  Ticket,
+  Landmark,
+  TreePine,
+  Bike,
+  Ship,
+  Umbrella,
+  Wine,
+  Beer,
+  IceCream,
+  Palmtree,
+  Tent,
+  Compass,
+  Theater,
+  Dumbbell,
+  Soup
 } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
@@ -34,14 +60,105 @@ const mockCities = [
   { id: 8, name: 'London', country: 'UK', costIndex: '$$$$' },
 ];
 
-// Mock activities for each city
-const mockActivities = [
-  { id: 1, name: 'City Walking Tour', type: 'Sightseeing', cost: 25, icon: 'camera' },
-  { id: 2, name: 'Local Food Experience', type: 'Food', cost: 40, icon: 'food' },
-  { id: 3, name: 'Museum Visit', type: 'Culture', cost: 20, icon: 'building' },
-  { id: 4, name: 'Adventure Hiking', type: 'Adventure', cost: 50, icon: 'mountain' },
-  { id: 5, name: 'Shopping Tour', type: 'Shopping', cost: 0, icon: 'shopping' },
-  { id: 6, name: 'Fine Dining', type: 'Food', cost: 80, icon: 'food' },
+// Comprehensive default activities organized by category
+const defaultActivities = [
+  // Transport
+  { id: 101, name: 'Airport Transfer', type: 'Transport', cost: 35, icon: 'plane' },
+  { id: 102, name: 'Train Journey', type: 'Transport', cost: 50, icon: 'train' },
+  { id: 103, name: 'Bus Tour', type: 'Transport', cost: 25, icon: 'bus' },
+  { id: 104, name: 'Car Rental', type: 'Transport', cost: 60, icon: 'car' },
+  { id: 105, name: 'Ferry/Boat Ride', type: 'Transport', cost: 30, icon: 'ship' },
+  { id: 106, name: 'Bike Rental', type: 'Transport', cost: 15, icon: 'bike' },
+  
+  // Accommodation
+  { id: 201, name: 'Hotel Check-in', type: 'Accommodation', cost: 0, icon: 'hotel' },
+  { id: 202, name: 'Hostel Stay', type: 'Accommodation', cost: 0, icon: 'home' },
+  { id: 203, name: 'Resort Check-in', type: 'Accommodation', cost: 0, icon: 'palmtree' },
+  { id: 204, name: 'Camping Setup', type: 'Accommodation', cost: 20, icon: 'tent' },
+  
+  // Sightseeing
+  { id: 301, name: 'City Walking Tour', type: 'Sightseeing', cost: 25, icon: 'camera' },
+  { id: 302, name: 'Landmark Visit', type: 'Sightseeing', cost: 15, icon: 'landmark' },
+  { id: 303, name: 'Guided City Tour', type: 'Sightseeing', cost: 45, icon: 'compass' },
+  { id: 304, name: 'Photo Tour', type: 'Sightseeing', cost: 35, icon: 'camera' },
+  { id: 305, name: 'Sunset/Sunrise Viewing', type: 'Sightseeing', cost: 0, icon: 'camera' },
+  { id: 306, name: 'Observation Deck Visit', type: 'Sightseeing', cost: 30, icon: 'building' },
+  
+  // Food & Drink
+  { id: 401, name: 'Breakfast', type: 'Food', cost: 15, icon: 'coffee' },
+  { id: 402, name: 'Lunch', type: 'Food', cost: 25, icon: 'food' },
+  { id: 403, name: 'Dinner', type: 'Food', cost: 40, icon: 'food' },
+  { id: 404, name: 'Street Food Tour', type: 'Food', cost: 30, icon: 'food' },
+  { id: 405, name: 'Fine Dining Experience', type: 'Food', cost: 100, icon: 'wine' },
+  { id: 406, name: 'Food Market Visit', type: 'Food', cost: 20, icon: 'shopping' },
+  { id: 407, name: 'Cooking Class', type: 'Food', cost: 75, icon: 'soup' },
+  { id: 408, name: 'Wine Tasting', type: 'Food', cost: 50, icon: 'wine' },
+  { id: 409, name: 'Brewery Tour', type: 'Food', cost: 35, icon: 'beer' },
+  { id: 410, name: 'Coffee Shop Visit', type: 'Food', cost: 10, icon: 'coffee' },
+  { id: 411, name: 'Dessert Tasting', type: 'Food', cost: 20, icon: 'icecream' },
+  
+  // Culture
+  { id: 501, name: 'Museum Visit', type: 'Culture', cost: 20, icon: 'building' },
+  { id: 502, name: 'Art Gallery Tour', type: 'Culture', cost: 25, icon: 'building' },
+  { id: 503, name: 'Historical Site Tour', type: 'Culture', cost: 30, icon: 'landmark' },
+  { id: 504, name: 'Religious Site Visit', type: 'Culture', cost: 0, icon: 'building' },
+  { id: 505, name: 'Cultural Performance', type: 'Culture', cost: 45, icon: 'theater' },
+  { id: 506, name: 'Local Festival', type: 'Culture', cost: 15, icon: 'sparkles' },
+  { id: 507, name: 'Traditional Ceremony', type: 'Culture', cost: 25, icon: 'sparkles' },
+  
+  // Adventure
+  { id: 601, name: 'Hiking Trail', type: 'Adventure', cost: 10, icon: 'mountain' },
+  { id: 602, name: 'Mountain Climbing', type: 'Adventure', cost: 80, icon: 'mountain' },
+  { id: 603, name: 'Scuba Diving', type: 'Adventure', cost: 100, icon: 'waves' },
+  { id: 604, name: 'Snorkeling', type: 'Adventure', cost: 40, icon: 'waves' },
+  { id: 605, name: 'Surfing Lesson', type: 'Adventure', cost: 60, icon: 'waves' },
+  { id: 606, name: 'Zip-lining', type: 'Adventure', cost: 55, icon: 'mountain' },
+  { id: 607, name: 'Paragliding', type: 'Adventure', cost: 120, icon: 'plane' },
+  { id: 608, name: 'Kayaking', type: 'Adventure', cost: 45, icon: 'waves' },
+  { id: 609, name: 'Safari Tour', type: 'Adventure', cost: 150, icon: 'compass' },
+  { id: 610, name: 'Bungee Jumping', type: 'Adventure', cost: 100, icon: 'sparkles' },
+  { id: 611, name: 'Rock Climbing', type: 'Adventure', cost: 50, icon: 'mountain' },
+  { id: 612, name: 'White Water Rafting', type: 'Adventure', cost: 85, icon: 'waves' },
+  
+  // Shopping
+  { id: 701, name: 'Shopping Mall Visit', type: 'Shopping', cost: 0, icon: 'shopping' },
+  { id: 702, name: 'Local Market Shopping', type: 'Shopping', cost: 0, icon: 'shopping' },
+  { id: 703, name: 'Souvenir Shopping', type: 'Shopping', cost: 50, icon: 'shopping' },
+  { id: 704, name: 'Boutique Shopping', type: 'Shopping', cost: 0, icon: 'shopping' },
+  { id: 705, name: 'Antique Shopping', type: 'Shopping', cost: 0, icon: 'shopping' },
+  
+  // Leisure
+  { id: 801, name: 'Beach Day', type: 'Leisure', cost: 0, icon: 'umbrella' },
+  { id: 802, name: 'Spa & Wellness', type: 'Leisure', cost: 80, icon: 'sparkles' },
+  { id: 803, name: 'Pool Day', type: 'Leisure', cost: 0, icon: 'waves' },
+  { id: 804, name: 'Park Visit', type: 'Leisure', cost: 0, icon: 'treepine' },
+  { id: 805, name: 'Yoga Session', type: 'Leisure', cost: 20, icon: 'sparkles' },
+  { id: 806, name: 'Gym Workout', type: 'Leisure', cost: 15, icon: 'dumbbell' },
+  { id: 807, name: 'Garden Tour', type: 'Leisure', cost: 10, icon: 'treepine' },
+  
+  // Entertainment
+  { id: 901, name: 'Live Music Show', type: 'Entertainment', cost: 50, icon: 'music' },
+  { id: 902, name: 'Theater Performance', type: 'Entertainment', cost: 70, icon: 'theater' },
+  { id: 903, name: 'Night Club', type: 'Entertainment', cost: 40, icon: 'music' },
+  { id: 904, name: 'Cinema/Movie', type: 'Entertainment', cost: 15, icon: 'ticket' },
+  { id: 905, name: 'Theme Park', type: 'Entertainment', cost: 80, icon: 'sparkles' },
+  { id: 906, name: 'Casino Visit', type: 'Entertainment', cost: 50, icon: 'sparkles' },
+  { id: 907, name: 'Pub Crawl', type: 'Entertainment', cost: 35, icon: 'beer' },
+  { id: 908, name: 'Karaoke Night', type: 'Entertainment', cost: 25, icon: 'music' },
+];
+
+// Activity categories for filtering
+const activityCategories = [
+  { id: 'all', name: 'All', icon: 'sparkles' },
+  { id: 'Transport', name: 'Transport', icon: 'plane' },
+  { id: 'Accommodation', name: 'Stay', icon: 'hotel' },
+  { id: 'Sightseeing', name: 'Sights', icon: 'camera' },
+  { id: 'Food', name: 'Food', icon: 'food' },
+  { id: 'Culture', name: 'Culture', icon: 'building' },
+  { id: 'Adventure', name: 'Adventure', icon: 'mountain' },
+  { id: 'Shopping', name: 'Shopping', icon: 'shopping' },
+  { id: 'Leisure', name: 'Leisure', icon: 'waves' },
+  { id: 'Entertainment', name: 'Fun', icon: 'music' },
 ];
 
 const getActivityIcon = (iconType) => {
@@ -51,7 +168,32 @@ const getActivityIcon = (iconType) => {
     case 'mountain': return <Mountain className="w-4 h-4" />;
     case 'building': return <Building className="w-4 h-4" />;
     case 'shopping': return <ShoppingBag className="w-4 h-4" />;
-    default: return <Camera className="w-4 h-4" />;
+    case 'plane': return <Plane className="w-4 h-4" />;
+    case 'train': return <Train className="w-4 h-4" />;
+    case 'bus': return <Bus className="w-4 h-4" />;
+    case 'car': return <Car className="w-4 h-4" />;
+    case 'hotel': return <Hotel className="w-4 h-4" />;
+    case 'home': return <Home className="w-4 h-4" />;
+    case 'coffee': return <Coffee className="w-4 h-4" />;
+    case 'waves': return <Waves className="w-4 h-4" />;
+    case 'sparkles': return <Sparkles className="w-4 h-4" />;
+    case 'music': return <Music className="w-4 h-4" />;
+    case 'ticket': return <Ticket className="w-4 h-4" />;
+    case 'landmark': return <Landmark className="w-4 h-4" />;
+    case 'treepine': return <TreePine className="w-4 h-4" />;
+    case 'bike': return <Bike className="w-4 h-4" />;
+    case 'ship': return <Ship className="w-4 h-4" />;
+    case 'umbrella': return <Umbrella className="w-4 h-4" />;
+    case 'wine': return <Wine className="w-4 h-4" />;
+    case 'beer': return <Beer className="w-4 h-4" />;
+    case 'icecream': return <IceCream className="w-4 h-4" />;
+    case 'palmtree': return <Palmtree className="w-4 h-4" />;
+    case 'tent': return <Tent className="w-4 h-4" />;
+    case 'compass': return <Compass className="w-4 h-4" />;
+    case 'theater': return <Theater className="w-4 h-4" />;
+    case 'dumbbell': return <Dumbbell className="w-4 h-4" />;
+    case 'soup': return <Soup className="w-4 h-4" />;
+    default: return <Sparkles className="w-4 h-4" />;
   }
 };
 
@@ -71,6 +213,16 @@ const ItineraryBuilder = () => {
   const [selectedActivity, setSelectedActivity] = useState(null);
   const [activitySchedule, setActivitySchedule] = useState({ date: '', time: '' });
   const [tripSuggestedActivities, setTripSuggestedActivities] = useState([]);
+  const [editingActivity, setEditingActivity] = useState(null); // { stopId, activity }
+  const [activitySearchQuery, setActivitySearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showCustomActivityForm, setShowCustomActivityForm] = useState(false);
+  const [customActivity, setCustomActivity] = useState({
+    name: '',
+    type: 'Sightseeing',
+    cost: 0,
+    icon: 'sparkles'
+  });
 
   // Load trip data when tripId changes or currentTrip is set
   useEffect(() => {
@@ -91,11 +243,43 @@ const ItineraryBuilder = () => {
     }
   }, [tripId, currentTrip?.id]);
 
-  // Combine mock activities with trip suggested activities
+  // Combine default activities with trip suggested activities
   const allActivities = [
     ...tripSuggestedActivities.map(a => ({ ...a, suggested: true })),
-    ...mockActivities.filter(m => !tripSuggestedActivities.some(s => s.name === m.name)),
+    ...defaultActivities.filter(m => !tripSuggestedActivities.some(s => s.name === m.name)),
   ];
+
+  // Filter activities based on search and category
+  const filteredActivities = allActivities.filter((activity) => {
+    const matchesSearch = activity.name.toLowerCase().includes(activitySearchQuery.toLowerCase()) ||
+                          activity.type.toLowerCase().includes(activitySearchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || activity.type === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Reset activity modal state
+  const resetActivityModal = () => {
+    setShowActivityModal(null);
+    setSelectedActivity(null);
+    setActivitySchedule({ date: '', time: '' });
+    setActivitySearchQuery('');
+    setSelectedCategory('all');
+    setShowCustomActivityForm(false);
+    setCustomActivity({ name: '', type: 'Sightseeing', cost: 0, icon: 'sparkles' });
+  };
+
+  // Add custom activity
+  const addCustomActivity = () => {
+    if (!customActivity.name.trim()) return;
+    const newActivity = {
+      id: Date.now(),
+      ...customActivity,
+      custom: true
+    };
+    handleActivitySelect(newActivity);
+    setShowCustomActivityForm(false);
+    setCustomActivity({ name: '', type: 'Sightseeing', cost: 0, icon: 'sparkles' });
+  };
 
   // Filter cities based on search
   const filteredCities = mockCities.filter(
@@ -188,6 +372,39 @@ const ItineraryBuilder = () => {
           : stop
       )
     );
+  };
+
+  const startEditingActivity = (stopId, activity) => {
+    setEditingActivity({ stopId, activity: { ...activity } });
+  };
+
+  const updateEditingActivity = (field, value) => {
+    setEditingActivity(prev => ({
+      ...prev,
+      activity: { ...prev.activity, [field]: value }
+    }));
+  };
+
+  const saveEditedActivity = () => {
+    if (!editingActivity) return;
+    const { stopId, activity } = editingActivity;
+    setStops(
+      stops.map((stop) =>
+        stop.id === stopId
+          ? {
+              ...stop,
+              activities: stop.activities.map((a) =>
+                a.assignedId === activity.assignedId ? activity : a
+              )
+            }
+          : stop
+      )
+    );
+    setEditingActivity(null);
+  };
+
+  const cancelEditingActivity = () => {
+    setEditingActivity(null);
   };
 
   const calculateTotalBudget = () => {
@@ -445,6 +662,13 @@ const ItineraryBuilder = () => {
                             <div className="flex items-center space-x-2">
                               <span className="text-xs text-green-400">${activity.cost}</span>
                               <button
+                                onClick={() => startEditingActivity(stop.id, activity)}
+                                className="text-gray-400 hover:text-blue-400 transition-colors"
+                                title="Edit activity"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
                                 onClick={() => removeActivityFromStop(stop.id, activity.assignedId)}
                                 className="text-gray-400 hover:text-red-400 transition-colors"
                               >
@@ -535,71 +759,201 @@ const ItineraryBuilder = () => {
         {/* Activity Selection Modal */}
         {showActivityModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-gray-800 border border-gray-700 rounded-xl w-full max-w-md">
+            <div className="bg-gray-800 border border-gray-700 rounded-xl w-full max-w-lg">
               <div className="flex items-center justify-between p-4 border-b border-gray-700">
                 <h3 className="text-lg font-semibold text-white">
-                  {selectedActivity ? 'Schedule Activity' : 'Select Activity'}
+                  {selectedActivity ? 'Schedule Activity' : showCustomActivityForm ? 'Create Custom Activity' : 'Add Activity'}
                 </h3>
                 <button
-                  onClick={() => {
-                    setShowActivityModal(null);
-                    setSelectedActivity(null);
-                    setActivitySchedule({ date: '', time: '' });
-                  }}
+                  onClick={resetActivityModal}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
-              {!selectedActivity ? (
-                // Step 1: Select Activity
-                <div className="p-4 max-h-80 overflow-y-auto space-y-2">
-                  {/* Show suggested activities first if any */}
-                  {tripSuggestedActivities.length > 0 && (
-                    <div className="mb-3">
-                      <p className="text-xs text-blue-400 font-medium mb-2 uppercase tracking-wide">
-                        ★ Your Selected Activities
-                      </p>
-                      {tripSuggestedActivities.map((activity) => (
+              {showCustomActivityForm ? (
+                // Custom Activity Form
+                <div className="p-4 space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">Activity Name *</label>
+                    <input
+                      type="text"
+                      placeholder="Enter activity name..."
+                      value={customActivity.name}
+                      onChange={(e) => setCustomActivity({ ...customActivity, name: e.target.value })}
+                      autoFocus
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Category</label>
+                      <select
+                        value={customActivity.type}
+                        onChange={(e) => setCustomActivity({ ...customActivity, type: e.target.value })}
+                        className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                      >
+                        <option value="Transport">Transport</option>
+                        <option value="Accommodation">Accommodation</option>
+                        <option value="Sightseeing">Sightseeing</option>
+                        <option value="Food">Food</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Leisure">Leisure</option>
+                        <option value="Entertainment">Entertainment</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm text-gray-400 mb-2">Cost ($)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        value={customActivity.cost}
+                        onChange={(e) => setCustomActivity({ ...customActivity, cost: parseFloat(e.target.value) || 0 })}
+                        className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-2">Icon</label>
+                    <div className="grid grid-cols-8 gap-2">
+                      {['sparkles', 'camera', 'food', 'mountain', 'building', 'shopping', 'plane', 'train', 'bus', 'car', 'hotel', 'coffee', 'waves', 'music', 'ticket', 'landmark'].map((icon) => (
                         <button
-                          key={`suggested-${activity.id}`}
+                          key={icon}
+                          type="button"
+                          onClick={() => setCustomActivity({ ...customActivity, icon })}
+                          className={`p-2 rounded-lg border transition-all ${
+                            customActivity.icon === icon
+                              ? 'bg-blue-600 border-blue-500 text-white'
+                              : 'bg-gray-900 border-gray-600 text-gray-400 hover:border-gray-500'
+                          }`}
+                        >
+                          {getActivityIcon(icon)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => setShowCustomActivityForm(false)}
+                      className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                    >
+                      Back
+                    </button>
+                    <button
+                      onClick={addCustomActivity}
+                      disabled={!customActivity.name.trim()}
+                      className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+                    >
+                      Add Activity
+                    </button>
+                  </div>
+                </div>
+              ) : !selectedActivity ? (
+                // Step 1: Select Activity
+                <div className="p-4">
+                  {/* Search Bar */}
+                  <div className="relative mb-3">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search activities..."
+                      value={activitySearchQuery}
+                      onChange={(e) => setActivitySearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Category Filters */}
+                  <div className="flex flex-wrap gap-1.5 mb-3 pb-3 border-b border-gray-700">
+                    {activityCategories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => setSelectedCategory(cat.id)}
+                        className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          selectedCategory === cat.id
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-900 text-gray-400 hover:bg-gray-700 hover:text-white'
+                        }`}
+                      >
+                        {getActivityIcon(cat.icon)}
+                        <span>{cat.name}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Activities List */}
+                  <div className="max-h-64 overflow-y-auto space-y-1.5">
+                    {/* Show suggested activities first if any */}
+                    {tripSuggestedActivities.length > 0 && selectedCategory === 'all' && !activitySearchQuery && (
+                      <div className="mb-3">
+                        <p className="text-xs text-blue-400 font-medium mb-2 uppercase tracking-wide">
+                          ★ Your Selected Activities
+                        </p>
+                        {tripSuggestedActivities.map((activity) => (
+                          <button
+                            key={`suggested-${activity.id}`}
+                            onClick={() => handleActivitySelect(activity)}
+                            className="w-full flex items-center justify-between p-2.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/50 hover:border-blue-500 rounded-lg transition-all text-left mb-1.5"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <span className="text-blue-400">{getActivityIcon(activity.icon)}</span>
+                              <div>
+                                <p className="text-white font-medium text-sm">{activity.name}</p>
+                                <p className="text-xs text-gray-400">{activity.type}</p>
+                              </div>
+                            </div>
+                            <span className="text-xs text-green-400 font-medium">${activity.cost}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Filtered Activities */}
+                    {filteredActivities.length > 0 ? (
+                      filteredActivities.map((activity) => (
+                        <button
+                          key={activity.id}
                           onClick={() => handleActivitySelect(activity)}
-                          className="w-full flex items-center justify-between p-3 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/50 hover:border-blue-500 rounded-lg transition-all text-left mb-2"
+                          className="w-full flex items-center justify-between p-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 rounded-lg transition-all text-left"
                         >
                           <div className="flex items-center space-x-3">
                             <span className="text-blue-400">{getActivityIcon(activity.icon)}</span>
                             <div>
-                              <p className="text-white font-medium">{activity.name}</p>
-                              <p className="text-sm text-gray-400">{activity.type} • {activity.location}</p>
+                              <p className="text-white font-medium text-sm">{activity.name}</p>
+                              <p className="text-xs text-gray-400">{activity.type}</p>
                             </div>
                           </div>
-                          <span className="text-sm text-green-400">${activity.cost}</span>
+                          <span className="text-xs text-green-400 font-medium">${activity.cost}</span>
                         </button>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Show all other activities */}
-                  <p className="text-xs text-gray-500 font-medium mb-2 uppercase tracking-wide">
-                    All Activities
-                  </p>
-                  {mockActivities.map((activity) => (
-                    <button
-                      key={activity.id}
-                      onClick={() => handleActivitySelect(activity)}
-                      className="w-full flex items-center justify-between p-3 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 rounded-lg transition-all text-left"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <span className="text-blue-400">{getActivityIcon(activity.icon)}</span>
-                        <div>
-                          <p className="text-white font-medium">{activity.name}</p>
-                          <p className="text-sm text-gray-400">{activity.type}</p>
-                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-6">
+                        <p className="text-gray-500 text-sm mb-3">No activities found</p>
+                        <button
+                          onClick={() => setShowCustomActivityForm(true)}
+                          className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                        >
+                          + Create Custom Activity
+                        </button>
                       </div>
-                      <span className="text-sm text-green-400">${activity.cost}</span>
-                    </button>
-                  ))}
+                    )}
+                  </div>
+
+                  {/* Create Custom Activity Button */}
+                  <button
+                    onClick={() => setShowCustomActivityForm(true)}
+                    className="w-full mt-3 flex items-center justify-center gap-2 p-3 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 border border-purple-500/50 hover:border-purple-500 rounded-lg transition-all text-purple-300 hover:text-white font-medium"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Create Custom Activity
+                  </button>
                 </div>
               ) : (
                 // Step 2: Schedule Activity
@@ -745,6 +1099,132 @@ const ItineraryBuilder = () => {
                     className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                   >
                     Save & View Timeline
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Activity Modal */}
+        {editingActivity && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gray-800 border border-gray-700 rounded-xl w-full max-w-md">
+              <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <h3 className="text-lg font-semibold text-white">Edit Activity</h3>
+                <button
+                  onClick={cancelEditingActivity}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                {/* Activity Name */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Activity Name</label>
+                  <input
+                    type="text"
+                    value={editingActivity.activity.name}
+                    onChange={(e) => updateEditingActivity('name', e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                  />
+                </div>
+
+                {/* Activity Type */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Type</label>
+                  <select
+                    value={editingActivity.activity.type}
+                    onChange={(e) => updateEditingActivity('type', e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                  >
+                    <option value="Sightseeing">Sightseeing</option>
+                    <option value="Food">Food</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Accommodation">Accommodation</option>
+                    <option value="Leisure">Leisure</option>
+                    <option value="Entertainment">Entertainment</option>
+                  </select>
+                </div>
+
+                {/* Date */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Date</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="date"
+                      value={editingActivity.activity.date || ''}
+                      onChange={(e) => updateEditingActivity('date', e.target.value)}
+                      className="w-full pl-10 pr-3 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
+                    />
+                  </div>
+                </div>
+
+                {/* Time */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Time</label>
+                  <div className="relative">
+                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <select
+                      value={editingActivity.activity.time || '9:00 AM'}
+                      onChange={(e) => updateEditingActivity('time', e.target.value)}
+                      className="w-full pl-10 pr-3 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                    >
+                      <option value="6:00 AM">6:00 AM</option>
+                      <option value="7:00 AM">7:00 AM</option>
+                      <option value="8:00 AM">8:00 AM</option>
+                      <option value="9:00 AM">9:00 AM</option>
+                      <option value="10:00 AM">10:00 AM</option>
+                      <option value="11:00 AM">11:00 AM</option>
+                      <option value="12:00 PM">12:00 PM</option>
+                      <option value="1:00 PM">1:00 PM</option>
+                      <option value="2:00 PM">2:00 PM</option>
+                      <option value="3:00 PM">3:00 PM</option>
+                      <option value="4:00 PM">4:00 PM</option>
+                      <option value="5:00 PM">5:00 PM</option>
+                      <option value="6:00 PM">6:00 PM</option>
+                      <option value="7:00 PM">7:00 PM</option>
+                      <option value="8:00 PM">8:00 PM</option>
+                      <option value="9:00 PM">9:00 PM</option>
+                      <option value="10:00 PM">10:00 PM</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Cost */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-2">Cost ($)</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="number"
+                      min="0"
+                      value={editingActivity.activity.cost}
+                      onChange={(e) => updateEditingActivity('cost', parseFloat(e.target.value) || 0)}
+                      className="w-full pl-10 pr-3 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={cancelEditingActivity}
+                    className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={saveEditedActivity}
+                    className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                  >
+                    Save Changes
                   </button>
                 </div>
               </div>
