@@ -5,6 +5,10 @@ import CreateTrip from './pages/CreateTrip';
 import MyTrips from './pages/MyTrips';
 import ItineraryBuilder from './pages/ItineraryBuilder';
 import TimelineView from './pages/TimelineView';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import './App.css';
 
 function App() {
@@ -12,13 +16,23 @@ function App() {
     <TripProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          {/* Auth Routes */}
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          
+          {/* Existing Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create-trip" element={<CreateTrip />} />
           <Route path="/my-trips" element={<MyTrips />} />
           <Route path="/itinerary-builder" element={<ItineraryBuilder />} />
           <Route path="/itinerary-builder/:tripId" element={<ItineraryBuilder />} />
           <Route path="/timeline/:tripId" element={<TimelineView />} />
           <Route path="/timeline" element={<TimelineView />} />
+          
+          {/* Admin Dashboard Route (placeholder for future admin panel) */}
+          <Route path="/admin-dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </TripProvider>
