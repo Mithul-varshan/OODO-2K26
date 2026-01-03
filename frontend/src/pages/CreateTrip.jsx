@@ -4,55 +4,107 @@ import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X } from 'lucide-rea
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
 
-// Mock suggestions for places/activities
+// Curated suggestions for popular places and activities
 const suggestedActivities = [
+  // Iconic Landmarks
   {
     id: 1,
     title: 'Eiffel Tower Visit',
     location: 'Paris, France',
     image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce65f4?w=400',
     type: 'Sightseeing',
-    cost: '$25',
+    cost: '$30',
   },
   {
     id: 2,
-    title: 'Local Food Tour',
+    title: 'Colosseum Tour',
+    location: 'Rome, Italy',
+    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400',
+    type: 'Sightseeing',
+    cost: '$25',
+  },
+  {
+    id: 3,
+    title: 'Machu Picchu Trek',
+    location: 'Cusco, Peru',
+    image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=400',
+    type: 'Adventure',
+    cost: '$75',
+  },
+  // Food Experiences
+  {
+    id: 4,
+    title: 'Street Food Tour',
     location: 'Bangkok, Thailand',
     image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400',
     type: 'Food',
     cost: '$40',
   },
   {
-    id: 3,
-    title: 'Colosseum Tour',
-    location: 'Rome, Italy',
-    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400',
-    type: 'Sightseeing',
-    cost: '$30',
-  },
-  {
-    id: 4,
-    title: 'Beach Day',
-    location: 'Bali, Indonesia',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
-    type: 'Leisure',
-    cost: 'Free',
-  },
-  {
     id: 5,
-    title: 'Mountain Hiking',
-    location: 'Swiss Alps',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400',
-    type: 'Adventure',
-    cost: '$50',
+    title: 'Sushi Making Class',
+    location: 'Tokyo, Japan',
+    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400',
+    type: 'Food',
+    cost: '$85',
   },
   {
     id: 6,
-    title: 'Museum Visit',
-    location: 'Amsterdam, Netherlands',
-    image: 'https://images.unsplash.com/photo-1566127444979-b3d2b654e3d7?w=400',
+    title: 'Wine Tasting Tour',
+    location: 'Tuscany, Italy',
+    image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400',
+    type: 'Food',
+    cost: '$60',
+  },
+  // Beach & Nature
+  {
+    id: 7,
+    title: 'Beach Day & Snorkeling',
+    location: 'Bali, Indonesia',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
+    type: 'Adventure',
+    cost: '$45',
+  },
+  {
+    id: 8,
+    title: 'Northern Lights Tour',
+    location: 'Reykjavik, Iceland',
+    image: 'https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=400',
+    type: 'Adventure',
+    cost: '$120',
+  },
+  {
+    id: 9,
+    title: 'Safari Adventure',
+    location: 'Serengeti, Tanzania',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400',
+    type: 'Adventure',
+    cost: '$200',
+  },
+  // Culture
+  {
+    id: 10,
+    title: 'Louvre Museum',
+    location: 'Paris, France',
+    image: 'https://images.unsplash.com/photo-1499426600726-7f5b8b39ed10?w=400',
     type: 'Culture',
     cost: '$20',
+  },
+  {
+    id: 11,
+    title: 'Flamenco Show',
+    location: 'Seville, Spain',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+    type: 'Culture',
+    cost: '$35',
+  },
+  {
+    id: 12,
+    title: 'Traditional Tea Ceremony',
+    location: 'Kyoto, Japan',
+    image: 'https://images.unsplash.com/photo-1545048702-79362596cdc9?w=400',
+    type: 'Culture',
+    cost: '$50',
   },
 ];
 
