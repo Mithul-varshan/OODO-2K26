@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X, Loader2, DollarSign } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
@@ -110,6 +110,7 @@ const suggestedActivities = [
 
 const CreateTrip = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { createTrip } = useTrips();
   const [formData, setFormData] = useState({
     tripName: '',
@@ -127,6 +128,15 @@ const CreateTrip = () => {
   const [isSearchingCities, setIsSearchingCities] = useState(false);
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const searchTimeoutRef = useRef(null);
+
+  // Pre-fill destination from URL params (from Explore page)
+  useEffect(() => {
+    const destination = searchParams.get('destination');
+    if (destination) {
+      setFormData(prev => ({ ...prev, selectedPlace: destination }));
+      setCitySearchQuery(destination);
+    }
+  }, [searchParams]);
 
   // Search cities using Open-Meteo Geocoding API (free, no API key required)
   const searchCities = async (query) => {
@@ -196,12 +206,34 @@ const CreateTrip = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.tripName || !formData.tripName.trim()) {
+      alert('Please enter a trip name');
+      return;
+    }
+    
+    if (!formData.startDate) {
+      alert('Please select a start date');
+      return;
+    }
+    
+    if (!formData.endDate) {
+      alert('Please select an end date');
+      return;
+    }
+    
+    if (new Date(formData.startDate) > new Date(formData.endDate)) {
+      alert('End date must be after start date');
+      return;
+    }
+    
     setIsCreating(true);
     
     // Create the trip using context with selected activities
-    const newTrip = createTrip({
+    const newTrip = await createTrip({
       ...formData,
       selectedActivities: selectedActivities,
     });
@@ -329,6 +361,7 @@ const CreateTrip = () => {
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleInputChange}
+                  required
                   className="w-full pl-12 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all [color-scheme:dark]"
                 />
               </div>
@@ -346,6 +379,8 @@ const CreateTrip = () => {
                   name="endDate"
                   value={formData.endDate}
                   onChange={handleInputChange}
+                  required
+                  min={formData.startDate || ''}
                   className="w-full pl-12 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all [color-scheme:dark]"
                 />
               </div>

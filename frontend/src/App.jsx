@@ -21,6 +21,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/create-trip" element={<CreateTrip />} />
             <Route path="/my-trips" element={<MyTrips />} />
+            <Route path="/explore" element={<Explore />} />
             <Route path="/calendar" element={<GlobalCalendar />} />
             <Route path="/budget" element={<BudgetTracker />} />
             <Route path="/profile" element={<Profile />} />

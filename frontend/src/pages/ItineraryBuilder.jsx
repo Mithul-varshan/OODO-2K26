@@ -309,14 +309,22 @@ const ItineraryBuilder = () => {
       const trip = getTrip(tripId);
       if (trip) {
         setTripName(trip.name || '');
-        setStops(trip.stops || []);
+        // Ensure each stop has an activities array
+        setStops((trip.stops || []).map(stop => ({
+          ...stop,
+          activities: stop.activities || []
+        })));
         setEditingTripId(trip.id);
         setTripSuggestedActivities(trip.suggestedActivities || []);
         selectTrip(tripId);
       }
     } else if (currentTrip) {
       setTripName(currentTrip.name || '');
-      setStops(currentTrip.stops || []);
+      // Ensure each stop has an activities array
+      setStops((currentTrip.stops || []).map(stop => ({
+        ...stop,
+        activities: stop.activities || []
+      })));
       setEditingTripId(currentTrip.id);
       setTripSuggestedActivities(currentTrip.suggestedActivities || []);
     }
@@ -380,6 +388,31 @@ const ItineraryBuilder = () => {
   };
 
   const updateStop = (id, field, value) => {
+    // Validate dates against trip dates if available
+    if (field === 'arrivalDate' || field === 'departureDate') {
+      if (currentTrip?.startDate && value && value < currentTrip.startDate) {
+        alert(`Date cannot be before trip start date (${currentTrip.startDate})`);
+        return;
+      }
+      if (currentTrip?.endDate && value && value > currentTrip.endDate) {
+        alert(`Date cannot be after trip end date (${currentTrip.endDate})`);
+        return;
+      }
+      
+      // If updating arrival date, ensure it's before or equal to departure date
+      const stop = stops.find(s => s.id === id);
+      if (field === 'arrivalDate' && stop?.departureDate && value && value > stop.departureDate) {
+        alert('Arrival date cannot be after departure date');
+        return;
+      }
+      
+      // If updating departure date, ensure it's after or equal to arrival date
+      if (field === 'departureDate' && stop?.arrivalDate && value && value < stop.arrivalDate) {
+        alert('Departure date cannot be before arrival date');
+        return;
+      }
+    }
+    
     setStops(
       stops.map((stop) =>
         stop.id === id ? { ...stop, [field]: value } : stop
@@ -494,31 +527,49 @@ const ItineraryBuilder = () => {
       alert('Please add at least one stop to your itinerary');
       return;
     }
+    
+    // Validate that all stops have required dates
+    for (const stop of stops) {
+      if (!stop.arrivalDate || !stop.departureDate) {
+        alert(`Please set arrival and departure dates for ${stop.city?.name || stop.cityName || 'all stops'}`);
+        return;
+      }
+    }
+    
     setShowSaveModal(true);
   };
 
-  const confirmSave = () => {
+  const confirmSave = async () => {
     const name = tripName.trim() || `Trip to ${stops[0]?.city?.name || 'Unknown'}`;
     
     if (editingTripId) {
       // Update existing trip
-      updateTripItinerary(editingTripId, stops);
+      await updateTripItinerary(editingTripId, stops);
       navigate(`/timeline/${editingTripId}`);
     } else {
       // Save new trip
-      const newTrip = saveItinerary(name, stops);
+      const newTrip = await saveItinerary(name, stops);
       navigate(`/timeline/${newTrip.id}`);
     }
   };
 
-  const handlePreview = () => {
+  const handlePreview = async () => {
     if (stops.length === 0) {
       alert('Please add at least one stop to preview');
       return;
     }
+    
+    // Validate that all stops have required dates
+    for (const stop of stops) {
+      if (!stop.arrivalDate || !stop.departureDate) {
+        alert(`Please set arrival and departure dates for ${stop.city?.name || stop.cityName || 'all stops'}`);
+        return;
+      }
+    }
+    
     // Save temporarily and preview
     const name = tripName.trim() || `Trip to ${stops[0]?.city?.name || 'Unknown'}`;
-    const newTrip = saveItinerary(name, stops);
+    const newTrip = await saveItinerary(name, stops);
     navigate(`/timeline/${newTrip.id}`);
   };
 
@@ -670,16 +721,17 @@ const ItineraryBuilder = () => {
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                           type="date"
-                          value={stop.arrivalDate}
+                          value={stop.arrivalDate || ''}
                           onChange={(e) => updateStop(stop.id, 'arrivalDate', e.target.value)}
                           min={currentTrip?.startDate || ''}
                           max={currentTrip?.endDate || stop.departureDate || ''}
+                          required
                           className="w-full pl-10 pr-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
                         />
                       </div>
                       {currentTrip?.startDate && (
                         <p className="text-xs text-gray-500 mt-1">
-                          Trip: {new Date(currentTrip.startDate).toLocaleDateString()} - {new Date(currentTrip.endDate).toLocaleDateString()}
+                          Trip: {currentTrip.startDate} - {currentTrip.endDate}
                         </p>
                       )}
                     </div>
@@ -691,10 +743,11 @@ const ItineraryBuilder = () => {
                         <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                           type="date"
-                          value={stop.departureDate}
+                          value={stop.departureDate || ''}
                           onChange={(e) => updateStop(stop.id, 'departureDate', e.target.value)}
                           min={stop.arrivalDate || currentTrip?.startDate || ''}
                           max={currentTrip?.endDate || ''}
+                          required
                           className="w-full pl-10 pr-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 transition-all [color-scheme:dark]"
                         />
                       </div>
@@ -768,7 +821,7 @@ const ItineraryBuilder = () => {
                                   {activity.date && (
                                     <span className="flex items-center gap-1">
                                       <Calendar className="w-3 h-3" />
-                                      {new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                      {activity.date}
                                     </span>
                                   )}
                                   {activity.time && (
@@ -1120,7 +1173,7 @@ const ItineraryBuilder = () => {
                     </label>
                     <input
                       type="date"
-                      value={activitySchedule.date}
+                      value={activitySchedule.date || ''}
                       onChange={(e) => setActivitySchedule({ ...activitySchedule, date: e.target.value })}
                       min={stops.find(s => s.id === showActivityModal)?.arrivalDate || ''}
                       max={stops.find(s => s.id === showActivityModal)?.departureDate || ''}
@@ -1128,7 +1181,7 @@ const ItineraryBuilder = () => {
                     />
                     {stops.find(s => s.id === showActivityModal)?.arrivalDate && (
                       <p className="text-xs text-gray-500 mt-1">
-                        Stay: {new Date(stops.find(s => s.id === showActivityModal)?.arrivalDate).toLocaleDateString()} - {new Date(stops.find(s => s.id === showActivityModal)?.departureDate).toLocaleDateString()}
+                        Stay: {stops.find(s => s.id === showActivityModal)?.arrivalDate} - {stops.find(s => s.id === showActivityModal)?.departureDate}
                       </p>
                     )}
                   </div>
@@ -1332,7 +1385,7 @@ const ItineraryBuilder = () => {
                   </div>
                   {stops.find(s => s.id === editingActivity.stopId)?.arrivalDate && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Stay: {new Date(stops.find(s => s.id === editingActivity.stopId)?.arrivalDate).toLocaleDateString()} - {new Date(stops.find(s => s.id === editingActivity.stopId)?.departureDate).toLocaleDateString()}
+                      Stay: {stops.find(s => s.id === editingActivity.stopId)?.arrivalDate} - {stops.find(s => s.id === editingActivity.stopId)?.departureDate}
                     </p>
                   )}
                 </div>

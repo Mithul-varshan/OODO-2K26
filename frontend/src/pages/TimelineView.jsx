@@ -208,6 +208,9 @@ const TimelineView = () => {
   useEffect(() => {
     if (tripId) {
       const foundTrip = getTrip(tripId);
+      console.log('Timeline: Loading trip ID', tripId, 'Found:', foundTrip);
+      console.log('Timeline: Trip stops:', foundTrip?.stops);
+      console.log('Timeline: All trips:', trips);
       setTrip(foundTrip);
     } else if (trips.length > 0) {
       // Show most recent trip if no ID provided

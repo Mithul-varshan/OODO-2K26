@@ -4,25 +4,19 @@ const initDatabase = async () => {
   try {
     console.log('Creating database tables...');
 
-    // Users table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        avatar VARCHAR(500),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
-    `);
-    console.log('✓ Users table created');
+    // Drop existing tables in reverse order to handle foreign keys
+    console.log('Dropping existing tables if any...');
+    await db.query('DROP TABLE IF EXISTS suggested_activities');
+    await db.query('DROP TABLE IF EXISTS activities');
+    await db.query('DROP TABLE IF EXISTS stops');
+    await db.query('DROP TABLE IF EXISTS trips');
+    console.log('✓ Old tables dropped (users table managed separately)');
 
     // Trips table
     await db.query(`
-      CREATE TABLE IF NOT EXISTS trips (
+      CREATE TABLE trips (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id INT DEFAULT 1,
         name VARCHAR(255) NOT NULL,
         start_date DATE,
         end_date DATE,
@@ -34,15 +28,14 @@ const initDatabase = async () => {
         budget DECIMAL(10, 2) DEFAULT 0,
         status ENUM('draft', 'upcoming', 'ongoing', 'completed') DEFAULT 'draft',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `);
     console.log('✓ Trips table created');
 
     // Stops table (each destination in a trip)
     await db.query(`
-      CREATE TABLE IF NOT EXISTS stops (
+      CREATE TABLE stops (
         id INT AUTO_INCREMENT PRIMARY KEY,
         trip_id INT NOT NULL,
         city_name VARCHAR(255) NOT NULL,
@@ -62,7 +55,7 @@ const initDatabase = async () => {
 
     // Activities table
     await db.query(`
-      CREATE TABLE IF NOT EXISTS activities (
+      CREATE TABLE activities (
         id INT AUTO_INCREMENT PRIMARY KEY,
         stop_id INT NOT NULL,
         name VARCHAR(255) NOT NULL,
@@ -84,7 +77,7 @@ const initDatabase = async () => {
 
     // Suggested activities (saved from CreateTrip page)
     await db.query(`
-      CREATE TABLE IF NOT EXISTS suggested_activities (
+      CREATE TABLE suggested_activities (
         id INT AUTO_INCREMENT PRIMARY KEY,
         trip_id INT NOT NULL,
         name VARCHAR(255) NOT NULL,
