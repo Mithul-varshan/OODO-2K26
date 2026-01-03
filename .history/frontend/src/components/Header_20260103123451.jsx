@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Menu, X, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "../context/LanguageContext";
 
 const Header = () => {
-  const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -24,19 +22,19 @@ const Header = () => {
               to="/"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("home")}
+              Home
             </Link>
             <Link
               to="/my-trips"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("myTrips")}
+              My Trips
             </Link>
             <Link
               to="/explore"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("explore")}
+              Explore
             </Link>
           </nav>
 
@@ -72,21 +70,21 @@ const Header = () => {
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("home")}
+                Home
               </Link>
               <Link
                 to="/my-trips"
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("myTrips")}
+                My Trips
               </Link>
               <Link
                 to="/explore"
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("explore")}
+                Explore
               </Link>
             </div>
           </nav>

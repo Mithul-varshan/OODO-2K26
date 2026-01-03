@@ -24,19 +24,19 @@ const Header = () => {
               to="/"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("home")}
+              {t('home')}
             </Link>
             <Link
               to="/my-trips"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("myTrips")}
+              {t('myTrips')}
             </Link>
             <Link
               to="/explore"
               className="text-gray-300 hover:text-white transition-colors duration-200"
             >
-              {t("explore")}
+              {t('explore')}
             </Link>
           </nav>
 
@@ -72,21 +72,21 @@ const Header = () => {
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("home")}
+                {t('home')}
               </Link>
               <Link
                 to="/my-trips"
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("myTrips")}
+                {t('myTrips')}
               </Link>
               <Link
                 to="/explore"
                 className="text-gray-300 hover:text-white transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t("explore")}
+                {t('explore')}
               </Link>
             </div>
           </nav>
