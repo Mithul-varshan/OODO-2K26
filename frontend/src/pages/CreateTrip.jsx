@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X } from 'lucide-react';
+import { Calendar, MapPin, Search, ArrowRight, Check, Plus, X, Loader2 } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
 
@@ -11,7 +11,7 @@ const suggestedActivities = [
     id: 1,
     title: 'Eiffel Tower Visit',
     location: 'Paris, France',
-    image: 'https://images.unsplash.com/photo-1511739001486-6bfe10ce65f4?w=400',
+    image: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Sightseeing',
     cost: '$30',
   },
@@ -19,7 +19,7 @@ const suggestedActivities = [
     id: 2,
     title: 'Colosseum Tour',
     location: 'Rome, Italy',
-    image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400',
+    image: 'https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Sightseeing',
     cost: '$25',
   },
@@ -27,7 +27,7 @@ const suggestedActivities = [
     id: 3,
     title: 'Machu Picchu Trek',
     location: 'Cusco, Peru',
-    image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=400',
+    image: 'https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Adventure',
     cost: '$75',
   },
@@ -36,7 +36,7 @@ const suggestedActivities = [
     id: 4,
     title: 'Street Food Tour',
     location: 'Bangkok, Thailand',
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400',
+    image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Food',
     cost: '$40',
   },
@@ -44,7 +44,7 @@ const suggestedActivities = [
     id: 5,
     title: 'Sushi Making Class',
     location: 'Tokyo, Japan',
-    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400',
+    image: 'https://images.pexels.com/photos/2098085/pexels-photo-2098085.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Food',
     cost: '$85',
   },
@@ -52,7 +52,7 @@ const suggestedActivities = [
     id: 6,
     title: 'Wine Tasting Tour',
     location: 'Tuscany, Italy',
-    image: 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400',
+    image: 'https://images.pexels.com/photos/1123260/pexels-photo-1123260.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Food',
     cost: '$60',
   },
@@ -61,7 +61,7 @@ const suggestedActivities = [
     id: 7,
     title: 'Beach Day & Snorkeling',
     location: 'Bali, Indonesia',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
+    image: 'https://images.pexels.com/photos/1032650/pexels-photo-1032650.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Adventure',
     cost: '$45',
   },
@@ -69,7 +69,7 @@ const suggestedActivities = [
     id: 8,
     title: 'Northern Lights Tour',
     location: 'Reykjavik, Iceland',
-    image: 'https://images.unsplash.com/photo-1483347756197-71ef80e95f73?w=400',
+    image: 'https://images.pexels.com/photos/1933239/pexels-photo-1933239.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Adventure',
     cost: '$120',
   },
@@ -77,7 +77,7 @@ const suggestedActivities = [
     id: 9,
     title: 'Safari Adventure',
     location: 'Serengeti, Tanzania',
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400',
+    image: 'https://images.pexels.com/photos/631317/pexels-photo-631317.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Adventure',
     cost: '$200',
   },
@@ -86,7 +86,7 @@ const suggestedActivities = [
     id: 10,
     title: 'Louvre Museum',
     location: 'Paris, France',
-    image: 'https://images.unsplash.com/photo-1499426600726-7f5b8b39ed10?w=400',
+    image: 'https://images.pexels.com/photos/2363/france-landmark-lights-night.jpg?auto=compress&cs=tinysrgb&w=400',
     type: 'Culture',
     cost: '$20',
   },
@@ -94,7 +94,7 @@ const suggestedActivities = [
     id: 11,
     title: 'Flamenco Show',
     location: 'Seville, Spain',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
+    image: 'https://images.pexels.com/photos/2188012/pexels-photo-2188012.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Culture',
     cost: '$35',
   },
@@ -102,7 +102,7 @@ const suggestedActivities = [
     id: 12,
     title: 'Traditional Tea Ceremony',
     location: 'Kyoto, Japan',
-    image: 'https://images.unsplash.com/photo-1545048702-79362596cdc9?w=400',
+    image: 'https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&w=400',
     type: 'Culture',
     cost: '$50',
   },
@@ -119,6 +119,73 @@ const CreateTrip = () => {
   });
   const [isCreating, setIsCreating] = useState(false);
   const [selectedActivities, setSelectedActivities] = useState([]);
+  
+  // City search state
+  const [citySearchQuery, setCitySearchQuery] = useState('');
+  const [cityResults, setCityResults] = useState([]);
+  const [isSearchingCities, setIsSearchingCities] = useState(false);
+  const [showCityDropdown, setShowCityDropdown] = useState(false);
+  const searchTimeoutRef = useRef(null);
+
+  // Search cities using Open-Meteo Geocoding API (free, no API key required)
+  const searchCities = async (query) => {
+    if (query.length < 2) {
+      setCityResults([]);
+      return;
+    }
+    
+    setIsSearchingCities(true);
+    try {
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`
+      );
+      const data = await response.json();
+      
+      if (data.results) {
+        setCityResults(data.results.map(city => ({
+          id: city.id,
+          name: city.name,
+          country: city.country || '',
+          admin1: city.admin1 || '', // State/Region
+          latitude: city.latitude,
+          longitude: city.longitude,
+          displayName: `${city.name}${city.admin1 ? `, ${city.admin1}` : ''}, ${city.country || ''}`
+        })));
+      } else {
+        setCityResults([]);
+      }
+    } catch (error) {
+      console.error('Error searching cities:', error);
+      setCityResults([]);
+    } finally {
+      setIsSearchingCities(false);
+    }
+  };
+
+  // Debounced city search
+  const handleCitySearch = (e) => {
+    const query = e.target.value;
+    setCitySearchQuery(query);
+    setFormData(prev => ({ ...prev, selectedPlace: query }));
+    setShowCityDropdown(true);
+    
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout for debounced search
+    searchTimeoutRef.current = setTimeout(() => {
+      searchCities(query);
+    }, 300);
+  };
+
+  const selectCity = (city) => {
+    setFormData(prev => ({ ...prev, selectedPlace: city.displayName }));
+    setCitySearchQuery(city.displayName);
+    setShowCityDropdown(false);
+    setCityResults([]);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -192,22 +259,62 @@ const CreateTrip = () => {
             </div>
 
             {/* Select a Place */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <label className="text-gray-300 text-sm font-medium w-32 shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+              <label className="text-gray-300 text-sm font-medium w-32 shrink-0 pt-3">
                 Select a Place:
               </label>
               <div className="relative flex-1">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <MapPin className="absolute left-4 top-3.5 w-5 h-5 text-gray-400 z-10" />
+                {isSearchingCities && (
+                  <Loader2 className="absolute right-4 top-3.5 w-5 h-5 text-blue-400 animate-spin" />
+                )}
                 <input
                   type="text"
-                  name="selectedPlace"
                   value={formData.selectedPlace}
-                  onChange={handleInputChange}
-                  placeholder="Search for a destination"
-                  className="w-full pl-12 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  onChange={handleCitySearch}
+                  onFocus={() => citySearchQuery.length >= 2 && setShowCityDropdown(true)}
+                  placeholder="Search any city worldwide..."
+                  className="w-full pl-12 pr-10 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
+                
+                {/* City Dropdown */}
+                {showCityDropdown && cityResults.length > 0 && (
+                  <div className="absolute z-20 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+                    {cityResults.map((city) => (
+                      <button
+                        key={city.id}
+                        type="button"
+                        onClick={() => selectCity(city)}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-700 transition-colors border-b border-gray-700/50 last:border-b-0"
+                      >
+                        <MapPin className="w-4 h-4 text-blue-400 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white font-medium truncate">{city.name}</p>
+                          <p className="text-sm text-gray-400 truncate">
+                            {city.admin1 && `${city.admin1}, `}{city.country}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* No results message */}
+                {showCityDropdown && citySearchQuery.length >= 2 && !isSearchingCities && cityResults.length === 0 && (
+                  <div className="absolute z-20 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-4 text-center">
+                    <p className="text-gray-400 text-sm">No cities found for "{citySearchQuery}"</p>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Click outside to close dropdown */}
+            {showCityDropdown && (
+              <div 
+                className="fixed inset-0 z-10" 
+                onClick={() => setShowCityDropdown(false)}
+              />
+            )}
 
             {/* Start Date */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">

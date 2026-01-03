@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router-dom';
 import { 
   Plus, 
@@ -43,22 +43,11 @@ import {
   Compass,
   Theater,
   Dumbbell,
-  Soup
+  Soup,
+  Loader2
 } from 'lucide-react';
 import Header from '../components/Header';
 import { useTrips } from '../context/TripContext';
-
-// Mock city data for search
-const mockCities = [
-  { id: 1, name: 'Paris', country: 'France', costIndex: '$$$' },
-  { id: 2, name: 'Tokyo', country: 'Japan', costIndex: '$$$' },
-  { id: 3, name: 'New York', country: 'USA', costIndex: '$$$$' },
-  { id: 4, name: 'Bali', country: 'Indonesia', costIndex: '$$' },
-  { id: 5, name: 'Rome', country: 'Italy', costIndex: '$$$' },
-  { id: 6, name: 'Barcelona', country: 'Spain', costIndex: '$$$' },
-  { id: 7, name: 'Bangkok', country: 'Thailand', costIndex: '$' },
-  { id: 8, name: 'London', country: 'UK', costIndex: '$$$$' },
-];
 
 // Comprehensive default activities organized by category
 const defaultActivities = [
@@ -223,6 +212,70 @@ const ItineraryBuilder = () => {
     cost: 0,
     icon: 'sparkles'
   });
+  
+  // City search API state
+  const [cityResults, setCityResults] = useState([]);
+  const [isSearchingCities, setIsSearchingCities] = useState(false);
+  const citySearchTimeoutRef = useRef(null);
+
+  // Search cities using Open-Meteo Geocoding API
+  const searchCities = async (query) => {
+    if (query.length < 2) {
+      setCityResults([]);
+      return;
+    }
+    
+    setIsSearchingCities(true);
+    try {
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`
+      );
+      const data = await response.json();
+      
+      if (data.results) {
+        setCityResults(data.results.map(city => ({
+          id: city.id,
+          name: city.name,
+          country: city.country || '',
+          admin1: city.admin1 || '',
+          costIndex: getCostIndex(city.country),
+        })));
+      } else {
+        setCityResults([]);
+      }
+    } catch (error) {
+      console.error('Error searching cities:', error);
+      setCityResults([]);
+    } finally {
+      setIsSearchingCities(false);
+    }
+  };
+
+  // Estimate cost index based on country
+  const getCostIndex = (country) => {
+    const expensive = ['Switzerland', 'Norway', 'Iceland', 'Denmark', 'United States', 'United Kingdom', 'Australia', 'Japan', 'Singapore'];
+    const moderate = ['France', 'Germany', 'Italy', 'Spain', 'Canada', 'Netherlands', 'Austria', 'Belgium', 'South Korea'];
+    const affordable = ['Thailand', 'Vietnam', 'Indonesia', 'India', 'Mexico', 'Portugal', 'Greece', 'Turkey', 'Malaysia', 'Philippines'];
+    
+    if (expensive.includes(country)) return '$$$$';
+    if (moderate.includes(country)) return '$$$';
+    if (affordable.includes(country)) return '$';
+    return '$$';
+  };
+
+  // Debounced city search
+  const handleCitySearchInput = (e) => {
+    const query = e.target.value;
+    setCitySearchQuery(query);
+    
+    if (citySearchTimeoutRef.current) {
+      clearTimeout(citySearchTimeoutRef.current);
+    }
+    
+    citySearchTimeoutRef.current = setTimeout(() => {
+      searchCities(query);
+    }, 300);
+  };
 
   // Load trip data when tripId changes or currentTrip is set
   useEffect(() => {
@@ -280,13 +333,6 @@ const ItineraryBuilder = () => {
     setShowCustomActivityForm(false);
     setCustomActivity({ name: '', type: 'Sightseeing', cost: 0, icon: 'sparkles' });
   };
-
-  // Filter cities based on search
-  const filteredCities = mockCities.filter(
-    (city) =>
-      city.name.toLowerCase().includes(citySearchQuery.toLowerCase()) ||
-      city.country.toLowerCase().includes(citySearchQuery.toLowerCase())
-  );
 
   const addStop = (city) => {
     const newStop = {
@@ -709,6 +755,7 @@ const ItineraryBuilder = () => {
                   onClick={() => {
                     setShowCitySearch(false);
                     setCitySearchQuery('');
+                    setCityResults([]);
                   }}
                   className="text-gray-400 hover:text-white transition-colors"
                 >
@@ -719,36 +766,58 @@ const ItineraryBuilder = () => {
               <div className="p-4">
                 <div className="relative mb-4">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  {isSearchingCities && (
+                    <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-400 animate-spin" />
+                  )}
                   <input
                     type="text"
-                    placeholder="Search cities..."
+                    placeholder="Search any city worldwide..."
                     value={citySearchQuery}
-                    onChange={(e) => setCitySearchQuery(e.target.value)}
+                    onChange={handleCitySearchInput}
                     autoFocus
-                    className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all"
+                    className="w-full pl-10 pr-10 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all"
                   />
                 </div>
 
                 <div className="max-h-64 overflow-y-auto space-y-2">
-                  {filteredCities.map((city) => (
+                  {cityResults.map((city) => (
                     <button
                       key={city.id}
-                      onClick={() => addStop(city)}
+                      onClick={() => {
+                        addStop(city);
+                        setCityResults([]);
+                      }}
                       className="w-full flex items-center justify-between p-3 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-blue-500 rounded-lg transition-all text-left"
                     >
                       <div className="flex items-center space-x-3">
                         <MapPin className="w-5 h-5 text-blue-400" />
                         <div>
                           <p className="text-white font-medium">{city.name}</p>
-                          <p className="text-sm text-gray-400">{city.country}</p>
+                          <p className="text-sm text-gray-400">
+                            {city.admin1 && `${city.admin1}, `}{city.country}
+                          </p>
                         </div>
                       </div>
                       <span className="text-sm text-green-400">{city.costIndex}</span>
                     </button>
                   ))}
 
-                  {filteredCities.length === 0 && (
-                    <p className="text-center text-gray-500 py-4">No cities found</p>
+                  {/* Loading state */}
+                  {isSearchingCities && (
+                    <div className="text-center py-4">
+                      <Loader2 className="w-6 h-6 text-blue-400 animate-spin mx-auto" />
+                      <p className="text-gray-400 text-sm mt-2">Searching cities...</p>
+                    </div>
+                  )}
+
+                  {/* No results */}
+                  {!isSearchingCities && citySearchQuery.length >= 2 && cityResults.length === 0 && (
+                    <p className="text-center text-gray-500 py-4">No cities found for "{citySearchQuery}"</p>
+                  )}
+
+                  {/* Initial state */}
+                  {!isSearchingCities && citySearchQuery.length < 2 && cityResults.length === 0 && (
+                    <p className="text-center text-gray-500 py-4">Type at least 2 characters to search</p>
                   )}
                 </div>
               </div>
