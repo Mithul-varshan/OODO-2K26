@@ -7,19 +7,38 @@ const tripsRoutes = require('./routes/trips');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
-// Middleware
-app.use(cors());
+// CORS Middleware - Must be before any routes or other middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
+
 app.use(express.json());
 
 // Routes
+
 app.use('/api/trips', tripsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
 });
+
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 
 // Start Server
 app.listen(PORT, () => {
