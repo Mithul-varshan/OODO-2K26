@@ -112,8 +112,8 @@ router.post('/', async (req, res) => {
     const {
       tripName,
       name,
-      toDateString(startDate),
-      toDateString(endDate),
+      startDate,
+      endDate,
       selectedPlace,
       budget,
       stops = [],
@@ -268,7 +268,7 @@ router.put('/:id', async (req, res) => {
     await connection.beginTransaction();
 
     const tripId = req.params.id;
-    const { name, toDateString(startDate), toDateString(endDate), budget, stops = [] } = req.body;
+    const { name, startDate, endDate, budget, stops = [] } = req.body;
 
     // Validate required dates for stops
     if (stops.length > 0) {
